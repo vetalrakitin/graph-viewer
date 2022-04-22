@@ -58,14 +58,15 @@ function infoController($scope, $http, $q, $location, $routeParams) {
   }
 
   function updateVersions(name) {
-    getPackageVersions($http, $q, name).then(function(versions) {
-      if (name !== getSelectedPackageName()) {
-        return;
-      }
+    // getPackageVersions($http, $q, name).then(function(versions) {
+    //   if (name !== getSelectedPackageName()) {
+    //     return;
+    //   }
 
-      $scope.versions = versions;
-      $scope.selectedVersion = $scope.selectedPackage.version;
-    });
+    //   $scope.versions = versions;
+    //   $scope.selectedVersion = $scope.selectedPackage.version;
+    // });
+    console.log('updateVersions', name);
   }
 
   function getSelectedPackageName() {
@@ -106,8 +107,8 @@ function infoController($scope, $http, $q, $location, $routeParams) {
     $scope.nodesCount = graph.getNodesCount();
 
     $scope.graphLoaded = true;
-    $scope.allMaintainers = require('./maintainers')(graph);
-    $scope.allLicenses = require('./licenses')(graph);
+    // $scope.allMaintainers = require('./maintainers')(graph);
+    // $scope.allLicenses = require('./licenses')(graph);
     $scope.allNames = require('./names')(graph);
 
     selectNode(graph.root);

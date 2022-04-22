@@ -1,20 +1,31 @@
 /**
  * Creates a graph for a give package name
  */
-var createGraphBuilder = require('npmgraphbuilder');
-var registryUrl = require('../config.js').registryUrl;
+// var tree = require('./tree/provide/tree-1650620846435.json');
+var tree = require('./tree/provideSingleton/tree-1650620627750.json');
 
 module.exports = buildGraph;
 
-function buildGraph(pkgName, version, http, changed) {
+function getId(item) {
+  return item.name.replace(/^.*\((.*)\)/, '$1') + ' - ' + item.id.slice(0, 8);
+}
+
+function buildGraph() {
   var graph = require('ngraph.graph')({uniqueLinkId: false});
 
-  var graphBuilder = createGraphBuilder(function (url) {
-    return http.get(url);
-  }, registryUrl);
+  var promise = Promise.resolve();
 
-  graphBuilder.notifyProgress(changed);
-  var promise = graphBuilder.createNpmDependenciesGraph(pkgName, graph, version);
+  graph.beginUpdate();
+  
+  for(const item of tree) {
+    const parentId = getId(item);
+    graph.addNode(parentId, {id: item.id});
+    item.deps.forEach(function(dep) {
+      graph.addLink(parentId, getId(dep));
+    })
+  }
+
+  graph.endUpdate();
 
   return {
     graph: graph,

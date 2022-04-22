@@ -1,3 +1,40 @@
+# how to open a JSON file
+
+1. open `src/scripts/viewer/graphBuilder.js`
+2. change the path for the `tree` variable
+
+# how to create a JSON file in inversify engine
+
+1. in file `node_modules/inversify/lib/planning/planner.js` put this code anywhere in the root scope:
+
+`````js
+let tree = [];
+setInterval(() => {
+    if (tree) {
+        require('fs').writeFileSync('./tree/tree-'+Date.now()+'.json', JSON.stringify(tree, null, 4));
+        tree = [];
+        console.log('written');
+    }
+},30000);
+`````
+
+Don't forget to create `tree` folder in the root folder
+
+2. in the `_createSubRequests` function after this code 
+`````js
+var dependencies = reflection_utils_1.getDependencies(metadataReader, binding.implementationType);
+`````
+place this code:
+`````js
+const item = {
+    name: serviceIdentifier.toString(),
+    id: target.guid,
+    deps: dependencies.map(item => ({name: item.serviceIdentifier.toString(), id: item.guid}))
+};
+tree.push(item);
+`````
+
+# Original readme
 # npmgraph.an
 
 [Visualization of npm](https://npm.anvaka.com) shows dependency graph of an npm package.
