@@ -1,8 +1,6 @@
 /**
  * Creates a graph for a give package name
  */
-// var tree = require('./tree/provide/tree-1650620846435.json');
-var tree = require('./tree/provideSingleton/tree-1650620627750.json');
 
 module.exports = buildGraph;
 
@@ -10,22 +8,26 @@ function getId(item) {
   return item.name.replace(/^.*\((.*)\)/, '$1') + ' - ' + item.id.slice(0, 8);
 }
 
-function buildGraph() {
+function buildGraph(pkgName, version, http) {
   var graph = require('ngraph.graph')({uniqueLinkId: false});
-
-  var promise = Promise.resolve();
-
-  graph.beginUpdate();
   
-  for(const item of tree) {
-    const parentId = getId(item);
-    graph.addNode(parentId, {id: item.id});
-    item.deps.forEach(function(dep) {
-      graph.addLink(parentId, getId(dep));
+  var promise = http
+    .get('http://0.0.0.0:8080/' + pkgName)
+    .then((response) => {
+      const tree = response.data;
+      // console.log(tree)  
+      graph.beginUpdate();
+    
+      for(const item of tree) {
+        const parentId = getId(item);
+        graph.addNode(parentId, {id: item.id});
+        item.depends.forEach(function(dep) {
+          graph.addLink(parentId, getId(dep));
+        })
+      }
+    
+      graph.endUpdate();
     })
-  }
-
-  graph.endUpdate();
 
   return {
     graph: graph,

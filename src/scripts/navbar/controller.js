@@ -61,4 +61,9 @@ function navbarController($scope, $http, $routeParams, $location, $q) {
       return packages;
     });
   };
+
+  $scope.show = () => {
+    console.log($scope.selectedPackage)
+    $location.path('/view/2d/' + $scope.selectedPackage);
+  }
 }

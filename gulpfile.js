@@ -104,6 +104,10 @@ var lr;
 function startStaticServer() {
   var express = require('express');
   var app = express();
+  app.all('/*', function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    next();
+  });
   app.use(require('connect-livereload')({port: devServer.livereload }));
   app.use(express.static(devServer.root));
   app.listen(devServer.port, devServer.server, function () {
