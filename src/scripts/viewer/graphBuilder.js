@@ -5,7 +5,11 @@
 module.exports = buildGraph;
 
 function getId(item) {
-  return item.name.replace(/^.*\((.*)\)/, '$1') + ' - ' + item.id.slice(0, 8);
+  return getName(item) + ' - ' + item.id.slice(0, 8);
+}
+
+function getName(item) {
+  return item.name.replace(/^.*\((.*)\)/, '$1');
 }
 
 function buildGraph(pkgName, version, http) {
@@ -20,9 +24,10 @@ function buildGraph(pkgName, version, http) {
     
       for(const item of tree) {
         const parentId = getId(item);
-        graph.addNode(parentId, {id: item.id});
+        const name =  getName(item);
+        graph.addNode(parentId, {id: item.id, name});
         item.depends.forEach(function(dep) {
-          graph.addLink(parentId, getId(dep));
+          graph.addLink(parentId, getId(dep), {id: dep.id, name: getName(dep)});
         })
       }
     

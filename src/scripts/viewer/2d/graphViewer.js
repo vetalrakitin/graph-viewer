@@ -28,7 +28,7 @@ function graphViewer() {
           var settings = {
             physics: require('../physics')(),
             container: element[0],
-            scrollSpeed: 0.02
+            scrollSpeed: 0.3
           };
           var renderer = require('ngraph.svg')(graph, settings);
 

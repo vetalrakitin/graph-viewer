@@ -83,10 +83,9 @@ function infoController($scope, $http, $q, $location, $routeParams) {
 
   function selectNode(node) {
     var data = node.data;
-    if (data && !('name' in data)) {
+    if (!data || !('name' in data)) {
       data = {
-        id: node.id,
-        remote: true
+        name: node.id.split(' - ')[0]
       };
     }
 
